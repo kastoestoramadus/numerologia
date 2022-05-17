@@ -3,18 +3,35 @@ import Numerologia.{Cyfra, NTrójca}
 object Numerologia extends App {
   import Słownik._
   type Cyfra = Int
+  type BazaSłów = Vector[String]
+  type SłowaNazwy = List[String]
 
   val karmiczne = Set(13, 14, 16, 19, 26)
-  val mistrzowskie = Set(11, 22, 33, 44, 55, 66, 77, 88, 99)
+  val mistrzowskie = Set(11, 22, 33, 44, 55, 66, 77, 88, 99, 111, 222)
   val opiekaBoska = Set(17,41)
 
   case class NPara(samogłosekSuma: Int, spółgłosekSuma: Int) {
+    def sumaObu = samogłosekSuma + spółgłosekSuma
+    def obu = toNCyfra(samogłosek + spółgłosek)
     def samogłosek = toNCyfra(samogłosekSuma)
     def spółgłosek = toNCyfra(spółgłosekSuma)
-    def jestKarmiczna = karmiczne.contains(samogłosekSuma) || karmiczne.contains(spółgłosekSuma) || karmiczne.contains(samogłosekSuma + spółgłosekSuma)
-    def jestOchronna = opiekaBoska.contains(samogłosekSuma) || opiekaBoska.contains(spółgłosekSuma) || opiekaBoska.contains(samogłosekSuma + spółgłosekSuma)
-    def jestMistrzowska = mistrzowskie.contains(samogłosekSuma) || mistrzowskie.contains(spółgłosekSuma) || mistrzowskie.contains(samogłosekSuma + spółgłosekSuma)
-    def jestMocy = 27 == samogłosekSuma || 27 == spółgłosekSuma || 27 == (samogłosekSuma + spółgłosekSuma)
+    def jestKarmiczna = karmiczne.contains(samogłosekSuma) || karmiczne.contains(spółgłosekSuma) || karmiczne.contains(sumaObu)
+    def jestOchronna = opiekaBoska.contains(samogłosekSuma) || opiekaBoska.contains(spółgłosekSuma) || opiekaBoska.contains(sumaObu)
+    def jestMistrzowska = mistrzowskie.contains(samogłosekSuma) || mistrzowskie.contains(spółgłosekSuma) || mistrzowskie.contains(sumaObu)
+    def jestMocy = 27 == samogłosekSuma || 27 == spółgłosekSuma || 27 == (sumaObu)
+    def mkString = s"""Słowa o numerologii:
+      samogłosekSuma = $samogłosekSuma
+      spółgłosekSuma = $spółgłosekSuma
+      sumaObu = $sumaObu
+      samogłosek = $samogłosek ; aka wewnętrzna
+      spółgłosek = $spółgłosek ; aka zewnętrzna
+      obu = $obu ; aka cel
+      jestKarmiczna = $jestKarmiczna
+      jestOchronna = $jestOchronna
+      jestMistrzowska = $jestMistrzowska
+      jestMocy = $jestMocy
+    """
+    def mkStringSumy = s"$samogłosekSuma/$spółgłosekSuma/$sumaObu"
   }
 
   def toNCyfra(liczba: Int): Cyfra =
@@ -22,65 +39,74 @@ object Numerologia extends App {
     else
       toNCyfra(liczba.toString.toCharArray.map(c => Integer.parseInt(c.toString)).sum)
 
-  def wylicz(str: String): NPara = {
+  def wyliczNParę(str: String): NPara = {
     val samo = str.filter(el => samogłoski.contains(el))
     val spół = str.filterNot(el => samogłoski.contains(el))
     NPara(samo.map(cyfryLiter).sum, spół.map(cyfryLiter).sum)
   }
 
+  def wyliczNParę(słowa: SłowaNazwy): NPara = {
+    val pary = słowa.map(wyliczNParę)
+    NPara(pary.map(_.samogłosekSuma).sum, pary.map(_.spółgłosekSuma).sum)
+  }
+
+
   case class NTrójca(wnętrzna: Cyfra, zewnętrzna: Cyfra, cele: Cyfra)
 
   def sortujWedług(tr: NTrójca): String = tr.wnętrzna.toString + tr.zewnętrzna.toString + tr.cele.toString
 
-  def wylicz(słowa: Seq[String]): NTrójca = {
-    val pary = słowa.map(wylicz)
-    val wew = toNCyfra(pary.map(_.samogłosek).sum)
-    val zew = toNCyfra(pary.map(_.spółgłosek).sum)
-    val cel = toNCyfra(wew + zew)
-    NTrójca(wew, zew, cel)
+  def wylicz(słowa: SłowaNazwy): NTrójca = {
+    val paraCałości = wyliczNParę(słowa)
+    NTrójca(paraCałości.samogłosek, paraCałości.spółgłosek, paraCałości.obu)
   }
 
-  def ilośćCyfr(słowa: List[String]): Map[Cyfra, Int] = słowa.flatten.map(cyfryLiter).groupBy(el => el).map(pair => pair._1 -> pair._2.size)
+  def ilośćCyfr(słowa: SłowaNazwy): Map[Cyfra, Int] = słowa.flatten.map(cyfryLiter).groupBy(el => el).map(pair => pair._1 -> pair._2.size)
 
-  def konfiguracja(słowa: Seq[Seq[String]]) = słowa.map(el => wylicz(el) -> el).groupBy(el => el._1).map(el => el._1 -> el._2.map(_._2.head))
+  def konfiguracja(słowa: Vector[SłowaNazwy]) = słowa.map(el => wylicz(el) -> el).groupBy(el => el._1).map(el => el._1 -> el._2.map(_._2.head))
 
   val ewy = List("EWA", "IZABELA","WERONIKA", "BEDNAREK", "KIEŁBASA")
 
   val ireny = List("IRENA", "MAGDALENA","MAKAREWICZ")
 
-  val bazoweSłowaWW: List[String] = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI")
+  val bazoweSłowaWW: SłowaNazwy = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI")
 
-  val bazoweSłowaMagdzik: List[String] = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA", "DOBROGNIEWA")
+  val bazoweSłowaMagdzik: SłowaNazwy = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA", "DOBROGNIEWA")
 
-  val lepszeŻeńśkie =
-    imionaŻeńskie.filter(imię => {
-          val npara = wylicz(imię)
-          (!npara.jestKarmiczna) && (npara.jestMistrzowska || npara.jestOchronna || npara.jestMocy)
-        }
+  def wyróżnioneSłowa(słowa: SłowaNazwy, baza: BazaSłów) = {
+    val nParaCałośći = wyliczNParę(słowa)
+    baza.filter(imię => {
+      val npara = wyliczNParę(imię)
+      (!npara.jestKarmiczna) && (npara.jestMistrzowska || npara.jestOchronna || npara.jestMocy || nParaCałośći.jestMistrzowska || nParaCałośći.jestOchronna || nParaCałośći.jestMocy)
+    }
     )
-
-
-  val lepszeMęskie =
-    imionaMęskie.filter(imię => {
-        val npara = wylicz(imię)
-        (!npara.jestKarmiczna) && (npara.jestMistrzowska || npara.jestOchronna || npara.jestMocy)
-      }
-    )
-
-  def pokażŻeńśkieOpcjeDla(słowa: List[String], ograniczDo: Set[NTrójca] = Set()): Unit = {
-    println(
-      ilośćCyfr(słowa)
-    )
-
-    println(wylicz(słowa))
-
-    println(s"Nowe konfiguracje dla $słowa")
-
-    konfiguracja((lepszeŻeńśkie.filter{imię => imię.count(l => "BKT".contains(l)) > 0 && imię.count(l => "FOX".contains(l)) > 0})
-      .map(el => el :: słowa)).toVector.filter(układ => ograniczDo.contains(układ._1)).sortBy(t => sortujWedług(t._1)).foreach(println)
   }
 
-  def pokażMęskieOpcjeDla(słowa: List[String], ograniczDo: Set[NTrójca] = Set()): Unit = {
+  def lepszeŻeńśkie(słowa: SłowaNazwy) = wyróżnioneSłowa(słowa, imionaŻeńskie)
+
+  def lepszeMęskie(słowa: SłowaNazwy) = wyróżnioneSłowa(słowa,imionaMęskie)
+
+  def pokażŻeńśkieOpcjeDla(słowa: SłowaNazwy, ograniczDo: Set[NTrójca] = Set()): Unit = {
+    println(
+      ilośćCyfr(słowa)
+    )
+
+    println(wyliczNParę(słowa).mkString)
+
+    println(s"Nowe konfiguracje dla $słowa")
+
+    konfiguracja(lepszeŻeńśkie(słowa)//.filter{imię => imię.count(l => "BKT".contains(l)) > 0 && imię.count(l => "FOX".contains(l)) > 0}
+      .map(el => el :: słowa)).toVector
+      .filter(układ => ograniczDo.contains(układ._1))
+      .map{słowa =>
+        val całości = wyliczNParę(słowa._2.toList)
+        if(całości.jestMistrzowska || całości.jestOchronna)
+          println(s"! ${całości.mkStringSumy} - to słowo ${słowa._2.head} w sumie dodaje mistrzowską.")
+        słowa
+      }
+      .sortBy(t => sortujWedług(t._1)).foreach(println)
+  }
+
+  def pokażMęskieOpcjeDla(słowa: SłowaNazwy, ograniczDo: Set[NTrójca] = Set()): Unit = {
     println(
       ilośćCyfr(słowa)
     )
@@ -89,8 +115,9 @@ object Numerologia extends App {
 
     println(s"Nowe konfiguracje dla $słowa")
 
-    konfiguracja((lepszeMęskie.filter(imię => imię.count(l => "BKT".contains(l)) > 1))
-      .map(el => el :: słowa)).toVector.filter(układ => ograniczDo.contains(układ._1)).sortBy(t => sortujWedług(t._1)).foreach(println)
+    konfiguracja(lepszeMęskie(słowa)//.filter(imię => imię.count(l => "BKT".contains(l)) > 1)
+      .map(el => el :: słowa)).toVector
+      .filter(układ => ograniczDo.contains(układ._1)).sortBy(t => sortujWedług(t._1)).foreach(println)
   }
 
   pokażŻeńśkieOpcjeDla(bazoweSłowaMagdzik, wyróżnioneDlaJedynki)
@@ -227,7 +254,7 @@ object Słownik {
     r.filter(_.forall(cyfryLiter.contains))
   }
 
-  lazy val imionaZDwójkami = Set(
+  lazy val imionaZDwójkami = Vector(
     "ALBERT",
     "ALBRECHT",
     "BALTAZAR",
