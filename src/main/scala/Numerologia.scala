@@ -70,13 +70,15 @@ object Numerologia extends App {
 
   val bazoweSłowaWW: SłowaNazwy = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI")
 
-  val bazoweSłowaMagdzik: SłowaNazwy = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA", "DOBROGNIEWA")
+  val bazoweSłowaMagdzik: SłowaNazwy = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA")
+
+  val bazoweDaniela: SłowaNazwy = List("DANIEL", "KONRAD", "KALIŃSKI")
 
   def wyróżnioneSłowa(słowa: SłowaNazwy, baza: BazaSłów) = {
-    val nParaCałośći = wyliczNParę(słowa)
+    val nParaCałości = wyliczNParę(słowa)
     baza.filter(imię => {
       val npara = wyliczNParę(imię)
-      (!npara.jestKarmiczna) && (npara.jestMistrzowska || npara.jestOchronna || npara.jestMocy || nParaCałośći.jestMistrzowska || nParaCałośći.jestOchronna || nParaCałośći.jestMocy)
+      (!npara.jestKarmiczna) && (npara.jestMistrzowska || npara.jestOchronna || npara.jestMocy || nParaCałości.jestMistrzowska || nParaCałości.jestOchronna || nParaCałości.jestMocy)
     }
     )
   }
