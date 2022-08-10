@@ -68,11 +68,17 @@ object Numerologia extends App {
 
   val ireny = List("IRENA", "MAGDALENA","MAKAREWICZ")
 
-  val bazoweSłowaWW: SłowaNazwy = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI")
+  val bazoweSłowaWW: SłowaNazwy = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI", "HEKTOR")
 
   val bazoweSłowaMagdzik: SłowaNazwy = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA")
 
   val bazoweDaniela: SłowaNazwy = List("DANIEL", "KONRAD", "KALIŃSKI")
+
+  val bazoweMŚledź = List ("MARZENA", "ANNA", "MARIA", "MAGDALENA", "ŚLEDŹ") //KALINKA BAJKA
+
+  val bazoweKStańczuk = List("KATARZYNA", "ANNA", "STAŃCZUK")
+
+  val bazoweHilda = List("Olga","Hildegarda","Graboś").map(_.toUpperCase)
 
   def wyróżnioneSłowa(słowa: SłowaNazwy, baza: BazaSłów) = {
     val nParaCałości = wyliczNParę(słowa)
@@ -83,11 +89,7 @@ object Numerologia extends App {
     )
   }
 
-  def lepszeŻeńśkie(słowa: SłowaNazwy) = wyróżnioneSłowa(słowa, imionaŻeńskie)
-
-  def lepszeMęskie(słowa: SłowaNazwy) = wyróżnioneSłowa(słowa,imionaMęskie)
-
-  def pokażŻeńśkieOpcjeDla(słowa: SłowaNazwy, ograniczDo: Set[NTrójca] = Set()): Unit = {
+  def pokażOpcjeDla(obszarDobierany: Vector[CzęśtotliwośćImienia],  słowa: SłowaNazwy, ograniczDo: Set[NTrójca] = Set()): Unit = {
     println(
       ilośćCyfr(słowa)
     )
@@ -96,7 +98,11 @@ object Numerologia extends App {
 
     println(s"Nowe konfiguracje dla $słowa")
 
-    konfiguracja(lepszeŻeńśkie(słowa)//.filter{imię => imię.count(l => "BKT".contains(l)) > 0 && imię.count(l => "FOX".contains(l)) > 0}
+    val bazaImion = wyróżnioneSłowa(słowa, obszarDobierany.map(_.imię))
+
+    konfiguracja(
+      bazaImion
+      //.filter{imię => imię.count(l => cyfryLiter(l) == 2) > 0 }// && imię.count(l => cyfryLiter(l) == 3) > 0}
       .map(el => el :: słowa)).toVector
       .filter(układ => ograniczDo.contains(układ._1))
       .map{słowa =>
@@ -105,25 +111,12 @@ object Numerologia extends App {
           println(s"! ${całości.mkStringSumy} - to słowo ${słowa._2.head} w sumie dodaje mistrzowską.")
         słowa
       }
-      .sortBy(t => sortujWedług(t._1)).foreach(println)
+      .map{case (trójka, imionaProponowane) => trójka -> imionaProponowane.sortBy(imię => obszarDobierany.find(k => k.imię == imię).map(_.ilość).get).reverse}
+      .sortBy(t => sortujWedług(t._1))
+      .foreach(println)
   }
 
-  def pokażMęskieOpcjeDla(słowa: SłowaNazwy, ograniczDo: Set[NTrójca] = Set()): Unit = {
-    println(
-      ilośćCyfr(słowa)
-    )
-
-    println(wylicz(słowa))
-
-    println(s"Nowe konfiguracje dla $słowa")
-
-    konfiguracja(lepszeMęskie(słowa)//.filter(imię => imię.count(l => "BKT".contains(l)) > 1)
-      .map(el => el :: słowa)).toVector
-      .filter(układ => ograniczDo.contains(układ._1)).sortBy(t => sortujWedług(t._1)).foreach(println)
-  }
-
-  pokażŻeńśkieOpcjeDla(bazoweSłowaMagdzik, wyróżnioneDlaJedynki)
-  //pokażMęskieOpcjeDla(bazoweSłowaWW)
+  pokażOpcjeDla(imionaŻeńskie, bazoweHilda, wyróżnioneDlaSzóstki)
 }
 
 object Słownik {
@@ -232,28 +225,36 @@ object Słownik {
   )
   final val samogłoski: String = "AĄEĘIOÓU"
 
-  lazy val imionaMęskie: Vector[String] = {
+  case class CzęśtotliwośćImienia(imię: String, ilość: Int)
+
+  lazy val imionaMęskie: Vector[CzęśtotliwośćImienia] = {
     println("Wczytywanie imion męskich.")
     val bufferedSource = io.Source.fromFile("/Users/waldemar.wosinski/IdeaProjects/Numerologia/src/main/resources/WYKAZ_IMION_MĘSKICH.csv")
     val lines = bufferedSource.getLines.drop(1)
     val r =
-      (for {line <- lines} yield line.split(",").map(_.trim).head).toVector
+      (for {line <- lines} yield {
+        val both = line.split(",").map(_.trim)
+        CzęśtotliwośćImienia(both.head, both.tail.tail.head.toInt)
+      }).toVector
 
     println("Wczytano imona męskie.")
     bufferedSource.close
-    r.filter(_.forall(cyfryLiter.contains))
+    r.filter(_.imię.forall(cyfryLiter.contains))
   }
 
-  lazy val imionaŻeńskie: Vector[String] = {
+  lazy val imionaŻeńskie: Vector[CzęśtotliwośćImienia] = {
     println("Wczytywanie imion żeńskich.")
     val bufferedSource = io.Source.fromFile("/Users/waldemar.wosinski/IdeaProjects/Numerologia/src/main/resources/WYKAZ_IMION_ŻEŃSKICH.csv")
     val lines = bufferedSource.getLines.drop(1)
     val r =
-      (for {line <- lines} yield line.split(",").map(_.trim).head).toVector
+      (for {line <- lines} yield {
+        val both = line.split(",").map(_.trim)
+        CzęśtotliwośćImienia(both.head, both.tail.tail.head.toInt)
+      }).toVector
 
     println("Wczytano imona żeńskich.")
     bufferedSource.close
-    r.filter(_.forall(cyfryLiter.contains))
+    r.filter(_.imię.forall(cyfryLiter.contains))
   }
 
   lazy val imionaZDwójkami = Vector(
