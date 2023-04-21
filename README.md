@@ -1,3 +1,2 @@
-# numerologia
-
-# Kasia Stańczuk do API
+A project for proposing optimal numerology profiles according to rules from Małgorzata Brzoza book (biased to Polish Language names)
+Aim is to have a webpage written in ScalaJS to host this calculator in my domain ww86.eu .
