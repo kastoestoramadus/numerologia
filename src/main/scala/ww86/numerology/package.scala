@@ -1,7 +1,7 @@
 package ww86
 
 package object numerology {
-  type Cyfra = Int
-  type BazaSłów = Vector[String]
-  type SłowaNazwy = List[String]
+  type Digit = Int
+  type WordsBase = Vector[String]
+  type MultiWordName = List[String]
 }

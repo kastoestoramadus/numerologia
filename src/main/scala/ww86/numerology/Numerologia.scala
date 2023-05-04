@@ -13,11 +13,11 @@ object Numerologia extends App {
 
     def spółgłosek = toNCyfra(spółgłosekSuma)
 
-    def jestKarmiczna = Podliczby.karmiczne.contains(samogłosekSuma) || Podliczby.karmiczne.contains(spółgłosekSuma) || Podliczby.karmiczne.contains(sumaObu)
+    def jestKarmiczna = Subnumbers.karmic.contains(samogłosekSuma) || Subnumbers.karmic.contains(spółgłosekSuma) || Subnumbers.karmic.contains(sumaObu)
 
-    def jestOchronna = Podliczby.opiekaBoska.contains(samogłosekSuma) || Podliczby.opiekaBoska.contains(spółgłosekSuma) || Podliczby.opiekaBoska.contains(sumaObu)
+    def jestOchronna = Subnumbers.protective.contains(samogłosekSuma) || Subnumbers.protective.contains(spółgłosekSuma) || Subnumbers.protective.contains(sumaObu)
 
-    def jestMistrzowska = Podliczby.mistrzowskie.contains(samogłosekSuma) || Podliczby.mistrzowskie.contains(spółgłosekSuma) || Podliczby.mistrzowskie.contains(sumaObu)
+    def jestMistrzowska = Subnumbers.masterly.contains(samogłosekSuma) || Subnumbers.masterly.contains(spółgłosekSuma) || Subnumbers.masterly.contains(sumaObu)
 
     def jestMocy = 27 == samogłosekSuma || 27 == spółgłosekSuma || 27 == (sumaObu)
 
@@ -38,45 +38,45 @@ object Numerologia extends App {
     def mkStringSumy = s"$samogłosekSuma/$spółgłosekSuma/$sumaObu"
   }
 
-  def toNCyfra(liczba: Int): Cyfra =
+  def toNCyfra(liczba: Int): Digit =
     if(liczba<10) liczba
     else
       toNCyfra(liczba.toString.toCharArray.map(c => Integer.parseInt(c.toString)).sum)
 
   def wyliczNParę(str: String): NPara = {
-    val samo = str.filter(el => samogłoski.contains(el))
-    val spół = str.filterNot(el => samogłoski.contains(el))
-    NPara(samo.map(cyfryLiter).sum, spół.map(cyfryLiter).sum)
+    val samo = str.filter(el => vowels.contains(el))
+    val spół = str.filterNot(el => vowels.contains(el))
+    NPara(samo.map(digitsOfLetters).sum, spół.map(digitsOfLetters).sum)
   }
 
-  def wyliczNParę(słowa: SłowaNazwy): NPara = {
+  def wyliczNParę(słowa: MultiWordName): NPara = {
     val pary = słowa.map(wyliczNParę)
     NPara(pary.map(_.samogłosekSuma).sum, pary.map(_.spółgłosekSuma).sum)
   }
 
 
-  case class NTrójca(wnętrzna: Cyfra, zewnętrzna: Cyfra, cele: Cyfra)
+  case class NTrójca(wnętrzna: Digit, zewnętrzna: Digit, cele: Digit)
 
   def sortujWedług(tr: NTrójca): String = tr.wnętrzna.toString + tr.zewnętrzna.toString + tr.cele.toString
 
-  def wylicz(słowa: SłowaNazwy): NTrójca = {
+  def wylicz(słowa: MultiWordName): NTrójca = {
     val paraCałości = wyliczNParę(słowa)
     NTrójca(paraCałości.samogłosek, paraCałości.spółgłosek, paraCałości.obu)
   }
 
-  def ilośćCyfr(słowa: SłowaNazwy): Map[Cyfra, Int] = słowa.flatten.map(cyfryLiter).groupBy(el => el).map(pair => pair._1 -> pair._2.size)
+  def ilośćCyfr(słowa: MultiWordName): Map[Digit, Int] = słowa.flatten.map(digitsOfLetters).groupBy(el => el).map(pair => pair._1 -> pair._2.size)
 
-  def konfiguracja(słowa: Vector[SłowaNazwy]) = słowa.map(el => wylicz(el) -> el).groupBy(el => el._1).map(el => el._1 -> el._2.map(_._2.head))
+  def konfiguracja(słowa: Vector[MultiWordName]) = słowa.map(el => wylicz(el) -> el).groupBy(el => el._1).map(el => el._1 -> el._2.map(_._2.head))
 
   val ewy = List("EWA", "IZABELA","WERONIKA", "BEDNAREK", "KIEŁBASA")
 
   val ireny = List("IRENA", "MAGDALENA","MAKAREWICZ")
 
-  val bazoweSłowaWW: SłowaNazwy = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI", "HEKTOR" )
+  val bazoweSłowaWW: MultiWordName = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI", "HEKTOR" )
 
-  val bazoweSłowaMagdzik: SłowaNazwy = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA")
+  val bazoweSłowaMagdzik: MultiWordName = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA")
 
-  val bazoweDaniela: SłowaNazwy = List("DANIEL", "KONRAD", "KALIŃSKI")
+  val bazoweDaniela: MultiWordName = List("DANIEL", "KONRAD", "KALIŃSKI")
 
   val bazoweMŚledź = List ("MARZENA", "ANNA", "MARIA", "MAGDALENA", "ŚLEDŹ") //KALINKA BAJKA
 
@@ -84,7 +84,7 @@ object Numerologia extends App {
 
   val bazoweHilda = List("Olga","Hildegarda","Graboś").map(_.toUpperCase)
 
-  def wyróżnioneSłowa(słowa: SłowaNazwy, baza: BazaSłów) = {
+  def wyróżnioneSłowa(słowa: MultiWordName, baza: WordsBase) = {
     val nParaCałości = wyliczNParę(słowa)
     baza.filter(imię => {
       val npara = wyliczNParę(imię)
@@ -93,7 +93,7 @@ object Numerologia extends App {
     )
   }
 
-  def pokażOpcjeDla(obszarDobierany: Vector[CzęśtotliwośćImienia],  słowa: SłowaNazwy, ograniczDo: Set[NTrójca] = Set()): Unit = {
+  def pokażOpcjeDla(obszarDobierany: Vector[CountedName], słowa: MultiWordName, ograniczDo: Set[NTrójca] = Set()): Unit = {
     println(
       ilośćCyfr(słowa)
     )
@@ -102,14 +102,14 @@ object Numerologia extends App {
 
     println(s"Nowe konfiguracje dla $słowa")
 
-    val bazaImion = wyróżnioneSłowa(słowa, obszarDobierany.map(_.imię))
+    val bazaImion = wyróżnioneSłowa(słowa, obszarDobierany.map(_.name))
 
     konfiguracja(
       bazaImion
-      .filter{imię => imię.count(l => cyfryLiter(l) == 9) == 0 }// && imię.count(l => cyfryLiter(l) == 3) > 0}
-        .filter{imię => imię.count(l => cyfryLiter(l) == 5) == 0 }
-        .filter{imię => imię.count(l => cyfryLiter(l) == 2) > 0 }
-        .filter{imię => imię.count(l => cyfryLiter(l) == 4) > 0 }
+      .filter{imię => imię.count(l => digitsOfLetters(l) == 9) == 0 }// && imię.count(l => cyfryLiter(l) == 3) > 0}
+        .filter{imię => imię.count(l => digitsOfLetters(l) == 5) == 0 }
+        .filter{imię => imię.count(l => digitsOfLetters(l) == 2) > 0 }
+        .filter{imię => imię.count(l => digitsOfLetters(l) == 4) > 0 }
       .map(el => el :: słowa)).toVector
       .filter(układ => ograniczDo.contains(układ._1))
       .map{słowa =>
@@ -118,11 +118,11 @@ object Numerologia extends App {
           println(s"! ${całości.mkStringSumy} - to słowo ${słowa._2.head} w sumie dodaje mistrzowską.")
         słowa
       }
-      .map{case (trójka, imionaProponowane) => trójka -> imionaProponowane.sortBy(imię => obszarDobierany.find(k => k.imię == imię).map(_.ilość).get).reverse}
+      .map{case (trójka, imionaProponowane) => trójka -> imionaProponowane.sortBy(imię => obszarDobierany.find(k => k.name == imię).map(_.count).get).reverse}
       .sortBy(t => sortujWedług(t._1))
       .foreach(println)
   }
 
-  pokażOpcjeDla(imionaMęskie, bazoweSłowaWW, wyróżnioneDlaSzóstki)
+  pokażOpcjeDla(maleNames, bazoweSłowaWW, bestForSixs)
 }
 

@@ -1,9 +1,9 @@
 package ww86.numerology
 
-import ww86.numerology.Numerologia.{Cyfra, NTrójca}
+import ww86.numerology.Numerologia.NTrójca
 
 object Dictionary {
-  val wyróżnioneDlaJedynki = Set(
+  val bestForOnes = Set(
     NTrójca(7, 3, 1),
     NTrójca(2, 9, 2),
     NTrójca(8, 3, 2),
@@ -15,13 +15,13 @@ object Dictionary {
     NTrójca(7, 2, 9),
     NTrójca(6, 3, 9)
   )
-  val wyróżnioneDlaDwójki = Set(
+  val bestForTwos = Set(
     NTrójca(1, 9, 1),
     NTrójca(9, 1, 1),
     NTrójca(1, 2, 3),
     NTrójca(1, 3, 4)
   )
-  val wyróżnioneDlaTrójki = Set(
+  val bestForThrees = Set(
     NTrójca(7, 3, 1),
     NTrójca(2, 9, 2),
     NTrójca(8, 3, 2),
@@ -30,13 +30,13 @@ object Dictionary {
     NTrójca(8, 1, 9),
     NTrójca(7, 2, 9)
   )
-  val wyróżnioneDlaCzwórki = Set(
+  val bestForFours = Set(
     NTrójca(1, 9, 1),
     NTrójca(1, 3, 4),
     NTrójca(1, 2, 3),
     NTrójca(6, 3, 9)
   )
-  val wyróżnioneDlaPiątki = Set(
+  val bestForFives = Set(
     NTrójca(7, 3, 1),
     NTrójca(2, 9, 2),
     NTrójca(2, 1, 3),
@@ -45,17 +45,17 @@ object Dictionary {
     NTrójca(7, 1, 8),
     NTrójca(7, 2, 9)
   )
-  val wyróżnioneDlaSzóstki = Set(
+  val bestForSixs = Set(
     NTrójca(1, 9, 1),
     NTrójca(1, 2, 3),
   )
-  val wyróżnioneDlaSiódemki = Set(
+  val bestForSevens = Set(
     NTrójca(1, 9, 1),
     NTrójca(1, 2, 3),
     NTrójca(9, 3, 3),
     NTrójca(1, 3, 4)
   )
-  val akceptowalneDlaSiódemki = Set(
+  val acceptableForSevens = Set(
     NTrójca(9, 1, 1),
     NTrójca(3, 7, 1),
     NTrójca(9, 2, 2),
@@ -67,12 +67,12 @@ object Dictionary {
     NTrójca(7, 2, 9),
     NTrójca(9, 9, 9),
   )
-  val wyróżnioneDlaÓsmeki = Set(
+  val bestForEights = Set(
     NTrójca(1, 9, 1),
     NTrójca(1, 3, 4),
     NTrójca(1, 8, 9)
   )
-  val wyróżnioneDlaDziewiątki = Set(
+  val bestForNines = Set(
     NTrójca(7, 3, 1),
     NTrójca(2, 9, 2),
     NTrójca(8, 3, 2),
@@ -81,7 +81,7 @@ object Dictionary {
     NTrójca(7, 2, 9)
   )
 
-  final val cyfryLiter: Map[Char, Cyfra] = Map(
+  final val digitsOfLetters: Map[Char, Digit] = Map(
     'A' -> 1,
     'Ą' -> 1,
     'B' -> 2,
@@ -118,43 +118,43 @@ object Dictionary {
     'Ż' -> 8,
     'Ź' -> 8
   )
-  final val samogłoski: String = "AĄEĘIOÓU"
+  final val vowels: String = "AĄEĘIOÓU"
 
-  case class CzęśtotliwośćImienia(imię: String, ilość: Int)
+  case class CountedName(name: String, count: Int)
 
-  lazy val imionaMęskie: Vector[CzęśtotliwośćImienia] = {
+  lazy val maleNames: Vector[CountedName] = {
     println("Wczytywanie imion męskich.")
     val bufferedSource = io.Source.fromResource("male_names.csv")
     val lines = bufferedSource.getLines.drop(1)
     val r =
       (for {line <- lines} yield {
         val both = line.split(",").map(_.trim)
-        CzęśtotliwośćImienia(both.head, both.tail.tail.head.toInt)
+        CountedName(both.head, both.tail.tail.head.toInt)
       }).toVector
 
     println("Wczytano imona męskie.")
     bufferedSource.close
-    r.filter(_.imię.forall(cyfryLiter.contains))
+    r.filter(_.name.forall(digitsOfLetters.contains))
   }
 
-  lazy val imionaŻeńskie: Vector[CzęśtotliwośćImienia] = {
+  lazy val femaleNames: Vector[CountedName] = {
     println("Wczytywanie imion żeńskich.")
     val bufferedSource = io.Source.fromResource("female_names.csv")
     val lines = bufferedSource.getLines.drop(1)
     val r =
       (for {line <- lines} yield {
         val both = line.split(",").map(_.trim)
-        CzęśtotliwośćImienia(both.head, both.tail.tail.head.toInt)
+        CountedName(both.head, both.tail.tail.head.toInt)
       }).toVector
 
     println("Wczytano imona żeńskich.")
     bufferedSource.close
-    r.filter(_.imię.forall(cyfryLiter.contains))
+    r.filter(_.name.forall(digitsOfLetters.contains))
   }
 
-  object Podliczby {
-    val karmiczne = Set(13, 14, 16, 19, 26)
-    val mistrzowskie = Set(11, 22, 33, 44, 55, 66, 77, 88, 99, 111, 222)
-    val opiekaBoska = Set(17, 41)
+  object Subnumbers {
+    val karmic = Set(13, 14, 16, 19, 26)
+    val masterly = Set(11, 22, 33, 44, 55, 66, 77, 88, 99, 111, 222)
+    val protective = Set(17, 41)
   }
 }
