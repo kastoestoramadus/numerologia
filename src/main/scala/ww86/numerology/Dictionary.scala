@@ -1,84 +1,84 @@
 package ww86.numerology
 
-import ww86.numerology.Numerologia.NTrójca
+import ww86.numerology.Numerologia.NThree
 
 object Dictionary {
   val bestForOnes = Set(
-    NTrójca(7, 3, 1),
-    NTrójca(2, 9, 2),
-    NTrójca(8, 3, 2),
-    NTrójca(2, 1, 3),
-    NTrójca(4, 3, 7),
-    NTrójca(7, 9, 7),
-    NTrójca(7, 1, 8),
-    NTrójca(8, 1, 9),
-    NTrójca(7, 2, 9),
-    NTrójca(6, 3, 9)
+    NThree(7, 3, 1),
+    NThree(2, 9, 2),
+    NThree(8, 3, 2),
+    NThree(2, 1, 3),
+    NThree(4, 3, 7),
+    NThree(7, 9, 7),
+    NThree(7, 1, 8),
+    NThree(8, 1, 9),
+    NThree(7, 2, 9),
+    NThree(6, 3, 9)
   )
   val bestForTwos = Set(
-    NTrójca(1, 9, 1),
-    NTrójca(9, 1, 1),
-    NTrójca(1, 2, 3),
-    NTrójca(1, 3, 4)
+    NThree(1, 9, 1),
+    NThree(9, 1, 1),
+    NThree(1, 2, 3),
+    NThree(1, 3, 4)
   )
   val bestForThrees = Set(
-    NTrójca(7, 3, 1),
-    NTrójca(2, 9, 2),
-    NTrójca(8, 3, 2),
-    NTrójca(2, 1, 3),
-    NTrójca(7, 1, 8),
-    NTrójca(8, 1, 9),
-    NTrójca(7, 2, 9)
+    NThree(7, 3, 1),
+    NThree(2, 9, 2),
+    NThree(8, 3, 2),
+    NThree(2, 1, 3),
+    NThree(7, 1, 8),
+    NThree(8, 1, 9),
+    NThree(7, 2, 9)
   )
   val bestForFours = Set(
-    NTrójca(1, 9, 1),
-    NTrójca(1, 3, 4),
-    NTrójca(1, 2, 3),
-    NTrójca(6, 3, 9)
+    NThree(1, 9, 1),
+    NThree(1, 3, 4),
+    NThree(1, 2, 3),
+    NThree(6, 3, 9)
   )
   val bestForFives = Set(
-    NTrójca(7, 3, 1),
-    NTrójca(2, 9, 2),
-    NTrójca(2, 1, 3),
-    NTrójca(4, 3, 7),
-    NTrójca(7, 9, 7),
-    NTrójca(7, 1, 8),
-    NTrójca(7, 2, 9)
+    NThree(7, 3, 1),
+    NThree(2, 9, 2),
+    NThree(2, 1, 3),
+    NThree(4, 3, 7),
+    NThree(7, 9, 7),
+    NThree(7, 1, 8),
+    NThree(7, 2, 9)
   )
   val bestForSixs = Set(
-    NTrójca(1, 9, 1),
-    NTrójca(1, 2, 3),
+    NThree(1, 9, 1),
+    NThree(1, 2, 3),
   )
   val bestForSevens = Set(
-    NTrójca(1, 9, 1),
-    NTrójca(1, 2, 3),
-    NTrójca(9, 3, 3),
-    NTrójca(1, 3, 4)
+    NThree(1, 9, 1),
+    NThree(1, 2, 3),
+    NThree(9, 3, 3),
+    NThree(1, 3, 4)
   )
   val acceptableForSevens = Set(
-    NTrójca(9, 1, 1),
-    NTrójca(3, 7, 1),
-    NTrójca(9, 2, 2),
-    NTrójca(3, 9, 3),
-    NTrójca(3, 1, 4),
-    NTrójca(9, 7, 7),
-    NTrójca(1, 7, 8),
-    NTrójca(1, 8, 9),
-    NTrójca(7, 2, 9),
-    NTrójca(9, 9, 9),
+    NThree(9, 1, 1),
+    NThree(3, 7, 1),
+    NThree(9, 2, 2),
+    NThree(3, 9, 3),
+    NThree(3, 1, 4),
+    NThree(9, 7, 7),
+    NThree(1, 7, 8),
+    NThree(1, 8, 9),
+    NThree(7, 2, 9),
+    NThree(9, 9, 9),
   )
   val bestForEights = Set(
-    NTrójca(1, 9, 1),
-    NTrójca(1, 3, 4),
-    NTrójca(1, 8, 9)
+    NThree(1, 9, 1),
+    NThree(1, 3, 4),
+    NThree(1, 8, 9)
   )
   val bestForNines = Set(
-    NTrójca(7, 3, 1),
-    NTrójca(2, 9, 2),
-    NTrójca(8, 3, 2),
-    NTrójca(2, 1, 3),
-    NTrójca(7, 1, 8),
-    NTrójca(7, 2, 9)
+    NThree(7, 3, 1),
+    NThree(2, 9, 2),
+    NThree(8, 3, 2),
+    NThree(2, 1, 3),
+    NThree(7, 1, 8),
+    NThree(7, 2, 9)
   )
 
   final val digitsOfLetters: Map[Char, Digit] = Map(

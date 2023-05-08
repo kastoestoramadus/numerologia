@@ -1,88 +1,31 @@
 package ww86.numerology
 
+import ww86.numerology.domain.{NPair, NThree}
+
 object Numerologia extends App {
   import Dictionary._
 
-
-  case class NPara(samogłosekSuma: Int, spółgłosekSuma: Int) {
-    def sumaObu = samogłosekSuma + spółgłosekSuma
-
-    def obu = toNCyfra(samogłosek + spółgłosek)
-
-    def samogłosek = toNCyfra(samogłosekSuma)
-
-    def spółgłosek = toNCyfra(spółgłosekSuma)
-
-    def jestKarmiczna = Subnumbers.karmic.contains(samogłosekSuma) || Subnumbers.karmic.contains(spółgłosekSuma) || Subnumbers.karmic.contains(sumaObu)
-
-    def jestOchronna = Subnumbers.protective.contains(samogłosekSuma) || Subnumbers.protective.contains(spółgłosekSuma) || Subnumbers.protective.contains(sumaObu)
-
-    def jestMistrzowska = Subnumbers.masterly.contains(samogłosekSuma) || Subnumbers.masterly.contains(spółgłosekSuma) || Subnumbers.masterly.contains(sumaObu)
-
-    def jestMocy = 27 == samogłosekSuma || 27 == spółgłosekSuma || 27 == (sumaObu)
-
-    def mkString =
-      s"""Słowa o numerologii:
-    samogłosekSuma = $samogłosekSuma
-    spółgłosekSuma = $spółgłosekSuma
-    sumaObu = $sumaObu
-    samogłosek = $samogłosek ; aka wewnętrzna
-    spółgłosek = $spółgłosek ; aka zewnętrzna
-    obu = $obu ; aka cel
-    jestKarmiczna = $jestKarmiczna
-    jestOchronna = $jestOchronna
-    jestMistrzowska = $jestMistrzowska
-    jestMocy = $jestMocy
-  """
-
-    def mkStringSumy = s"$samogłosekSuma/$spółgłosekSuma/$sumaObu"
-  }
-
-  def toNCyfra(liczba: Int): Digit =
-    if(liczba<10) liczba
-    else
-      toNCyfra(liczba.toString.toCharArray.map(c => Integer.parseInt(c.toString)).sum)
-
-  def wyliczNParę(str: String): NPara = {
+  def wyliczNParę(str: String): NPair = {
     val samo = str.filter(el => vowels.contains(el))
     val spół = str.filterNot(el => vowels.contains(el))
-    NPara(samo.map(digitsOfLetters).sum, spół.map(digitsOfLetters).sum)
+    NPair(samo.map(digitsOfLetters).sum, spół.map(digitsOfLetters).sum)
   }
 
-  def wyliczNParę(słowa: MultiWordName): NPara = {
+  def wyliczNParę(słowa: MultiWordName): NPair = {
     val pary = słowa.map(wyliczNParę)
-    NPara(pary.map(_.samogłosekSuma).sum, pary.map(_.spółgłosekSuma).sum)
+    NPair(pary.map(_.samogłosekSuma).sum, pary.map(_.spółgłosekSuma).sum)
   }
 
+  def sortujWedług(tr: NThree): String = tr.wnętrzna.toString + tr.zewnętrzna.toString + tr.cele.toString
 
-  case class NTrójca(wnętrzna: Digit, zewnętrzna: Digit, cele: Digit)
-
-  def sortujWedług(tr: NTrójca): String = tr.wnętrzna.toString + tr.zewnętrzna.toString + tr.cele.toString
-
-  def wylicz(słowa: MultiWordName): NTrójca = {
+  def wylicz(słowa: MultiWordName): NThree = {
     val paraCałości = wyliczNParę(słowa)
-    NTrójca(paraCałości.samogłosek, paraCałości.spółgłosek, paraCałości.obu)
+    NThree(paraCałości.samogłosek, paraCałości.spółgłosek, paraCałości.obu)
   }
 
   def ilośćCyfr(słowa: MultiWordName): Map[Digit, Int] = słowa.flatten.map(digitsOfLetters).groupBy(el => el).map(pair => pair._1 -> pair._2.size)
 
   def konfiguracja(słowa: Vector[MultiWordName]) = słowa.map(el => wylicz(el) -> el).groupBy(el => el._1).map(el => el._1 -> el._2.map(_._2.head))
-
-  val ewy = List("EWA", "IZABELA","WERONIKA", "BEDNAREK", "KIEŁBASA")
-
-  val ireny = List("IRENA", "MAGDALENA","MAKAREWICZ")
-
-  val bazoweSłowaWW: MultiWordName = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI", "HEKTOR" )
-
-  val bazoweSłowaMagdzik: MultiWordName = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA")
-
-  val bazoweDaniela: MultiWordName = List("DANIEL", "KONRAD", "KALIŃSKI")
-
-  val bazoweMŚledź = List ("MARZENA", "ANNA", "MARIA", "MAGDALENA", "ŚLEDŹ") //KALINKA BAJKA
-
-  val bazoweKStańczuk = List("KATARZYNA", "ANNA", "STAŃCZUK")
-
-  val bazoweHilda = List("Olga","Hildegarda","Graboś").map(_.toUpperCase)
 
   def wyróżnioneSłowa(słowa: MultiWordName, baza: WordsBase) = {
     val nParaCałości = wyliczNParę(słowa)
@@ -93,7 +36,7 @@ object Numerologia extends App {
     )
   }
 
-  def pokażOpcjeDla(obszarDobierany: Vector[CountedName], słowa: MultiWordName, ograniczDo: Set[NTrójca] = Set()): Unit = {
+  def pokażOpcjeDla(obszarDobierany: Vector[CountedName], słowa: MultiWordName, ograniczDo: Set[NThree] = Set()): Unit = {
     println(
       ilośćCyfr(słowa)
     )
@@ -122,6 +65,22 @@ object Numerologia extends App {
       .sortBy(t => sortujWedług(t._1))
       .foreach(println)
   }
+
+  val ewy = List("EWA", "IZABELA", "WERONIKA", "BEDNAREK", "KIEŁBASA")
+
+  val ireny = List("IRENA", "MAGDALENA", "MAKAREWICZ")
+
+  val bazoweSłowaWW: MultiWordName = List("WALDEMAR", "GRZEGORZ", "MELCHIOR", "WOSIŃSKI", "HEKTOR")
+
+  val bazoweSłowaMagdzik: MultiWordName = List("MAGDALENA", "MARIA", "BARBARA", "WIELGOŁASKA")
+
+  val bazoweDaniela: MultiWordName = List("DANIEL", "KONRAD", "KALIŃSKI")
+
+  val bazoweMŚledź = List("MARZENA", "ANNA", "MARIA", "MAGDALENA", "ŚLEDŹ") //KALINKA BAJKA
+
+  val bazoweKStańczuk = List("KATARZYNA", "ANNA", "STAŃCZUK")
+
+  val bazoweHilda = List("Olga", "Hildegarda", "Graboś").map(_.toUpperCase)
 
   pokażOpcjeDla(maleNames, bazoweSłowaWW, bestForSixs)
 }
