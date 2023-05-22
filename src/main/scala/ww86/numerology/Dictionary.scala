@@ -1,84 +1,84 @@
 package ww86.numerology
 
-import ww86.numerology.Numerologia.NThree
+import ww86.numerology.domain.NProfile
 
 object Dictionary {
   val bestForOnes = Set(
-    NThree(7, 3, 1),
-    NThree(2, 9, 2),
-    NThree(8, 3, 2),
-    NThree(2, 1, 3),
-    NThree(4, 3, 7),
-    NThree(7, 9, 7),
-    NThree(7, 1, 8),
-    NThree(8, 1, 9),
-    NThree(7, 2, 9),
-    NThree(6, 3, 9)
+    NProfile(7, 3, 1),
+    NProfile(2, 9, 2),
+    NProfile(8, 3, 2),
+    NProfile(2, 1, 3),
+    NProfile(4, 3, 7),
+    NProfile(7, 9, 7),
+    NProfile(7, 1, 8),
+    NProfile(8, 1, 9),
+    NProfile(7, 2, 9),
+    NProfile(6, 3, 9)
   )
   val bestForTwos = Set(
-    NThree(1, 9, 1),
-    NThree(9, 1, 1),
-    NThree(1, 2, 3),
-    NThree(1, 3, 4)
+    NProfile(1, 9, 1),
+    NProfile(9, 1, 1),
+    NProfile(1, 2, 3),
+    NProfile(1, 3, 4)
   )
   val bestForThrees = Set(
-    NThree(7, 3, 1),
-    NThree(2, 9, 2),
-    NThree(8, 3, 2),
-    NThree(2, 1, 3),
-    NThree(7, 1, 8),
-    NThree(8, 1, 9),
-    NThree(7, 2, 9)
+    NProfile(7, 3, 1),
+    NProfile(2, 9, 2),
+    NProfile(8, 3, 2),
+    NProfile(2, 1, 3),
+    NProfile(7, 1, 8),
+    NProfile(8, 1, 9),
+    NProfile(7, 2, 9)
   )
   val bestForFours = Set(
-    NThree(1, 9, 1),
-    NThree(1, 3, 4),
-    NThree(1, 2, 3),
-    NThree(6, 3, 9)
+    NProfile(1, 9, 1),
+    NProfile(1, 3, 4),
+    NProfile(1, 2, 3),
+    NProfile(6, 3, 9)
   )
   val bestForFives = Set(
-    NThree(7, 3, 1),
-    NThree(2, 9, 2),
-    NThree(2, 1, 3),
-    NThree(4, 3, 7),
-    NThree(7, 9, 7),
-    NThree(7, 1, 8),
-    NThree(7, 2, 9)
+    NProfile(7, 3, 1),
+    NProfile(2, 9, 2),
+    NProfile(2, 1, 3),
+    NProfile(4, 3, 7),
+    NProfile(7, 9, 7),
+    NProfile(7, 1, 8),
+    NProfile(7, 2, 9)
   )
   val bestForSixs = Set(
-    NThree(1, 9, 1),
-    NThree(1, 2, 3),
+    NProfile(1, 9, 1),
+    NProfile(1, 2, 3),
   )
   val bestForSevens = Set(
-    NThree(1, 9, 1),
-    NThree(1, 2, 3),
-    NThree(9, 3, 3),
-    NThree(1, 3, 4)
+    NProfile(1, 9, 1),
+    NProfile(1, 2, 3),
+    NProfile(9, 3, 3),
+    NProfile(1, 3, 4)
   )
   val acceptableForSevens = Set(
-    NThree(9, 1, 1),
-    NThree(3, 7, 1),
-    NThree(9, 2, 2),
-    NThree(3, 9, 3),
-    NThree(3, 1, 4),
-    NThree(9, 7, 7),
-    NThree(1, 7, 8),
-    NThree(1, 8, 9),
-    NThree(7, 2, 9),
-    NThree(9, 9, 9),
+    NProfile(9, 1, 1),
+    NProfile(3, 7, 1),
+    NProfile(9, 2, 2),
+    NProfile(3, 9, 3),
+    NProfile(3, 1, 4),
+    NProfile(9, 7, 7),
+    NProfile(1, 7, 8),
+    NProfile(1, 8, 9),
+    NProfile(7, 2, 9),
+    NProfile(9, 9, 9),
   )
   val bestForEights = Set(
-    NThree(1, 9, 1),
-    NThree(1, 3, 4),
-    NThree(1, 8, 9)
+    NProfile(1, 9, 1),
+    NProfile(1, 3, 4),
+    NProfile(1, 8, 9)
   )
   val bestForNines = Set(
-    NThree(7, 3, 1),
-    NThree(2, 9, 2),
-    NThree(8, 3, 2),
-    NThree(2, 1, 3),
-    NThree(7, 1, 8),
-    NThree(7, 2, 9)
+    NProfile(7, 3, 1),
+    NProfile(2, 9, 2),
+    NProfile(8, 3, 2),
+    NProfile(2, 1, 3),
+    NProfile(7, 1, 8),
+    NProfile(7, 2, 9)
   )
 
   final val digitsOfLetters: Map[Char, Digit] = Map(
@@ -147,7 +147,7 @@ object Dictionary {
         CountedName(both.head, both.tail.tail.head.toInt)
       }).toVector
 
-    println("Wczytano imona żeńskich.")
+    println("Wczytano imona żeńskie.")
     bufferedSource.close
     r.filter(_.name.forall(digitsOfLetters.contains))
   }
