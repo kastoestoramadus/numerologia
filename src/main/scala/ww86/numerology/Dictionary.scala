@@ -1,84 +1,84 @@
 package ww86.numerology
 
-import ww86.numerology.domain.NProfile
+import ww86.numerology.domain.NShortProfile
 
 object Dictionary {
   val bestForOnes = Set(
-    NProfile(7, 3, 1),
-    NProfile(2, 9, 2),
-    NProfile(8, 3, 2),
-    NProfile(2, 1, 3),
-    NProfile(4, 3, 7),
-    NProfile(7, 9, 7),
-    NProfile(7, 1, 8),
-    NProfile(8, 1, 9),
-    NProfile(7, 2, 9),
-    NProfile(6, 3, 9)
+    NShortProfile(7, 3, 1),
+    NShortProfile(2, 9, 2),
+    NShortProfile(8, 3, 2),
+    NShortProfile(2, 1, 3),
+    NShortProfile(4, 3, 7),
+    NShortProfile(7, 9, 7),
+    NShortProfile(7, 1, 8),
+    NShortProfile(8, 1, 9),
+    NShortProfile(7, 2, 9),
+    NShortProfile(6, 3, 9)
   )
   val bestForTwos = Set(
-    NProfile(1, 9, 1),
-    NProfile(9, 1, 1),
-    NProfile(1, 2, 3),
-    NProfile(1, 3, 4)
+    NShortProfile(1, 9, 1),
+    NShortProfile(9, 1, 1),
+    NShortProfile(1, 2, 3),
+    NShortProfile(1, 3, 4)
   )
   val bestForThrees = Set(
-    NProfile(7, 3, 1),
-    NProfile(2, 9, 2),
-    NProfile(8, 3, 2),
-    NProfile(2, 1, 3),
-    NProfile(7, 1, 8),
-    NProfile(8, 1, 9),
-    NProfile(7, 2, 9)
+    NShortProfile(7, 3, 1),
+    NShortProfile(2, 9, 2),
+    NShortProfile(8, 3, 2),
+    NShortProfile(2, 1, 3),
+    NShortProfile(7, 1, 8),
+    NShortProfile(8, 1, 9),
+    NShortProfile(7, 2, 9)
   )
   val bestForFours = Set(
-    NProfile(1, 9, 1),
-    NProfile(1, 3, 4),
-    NProfile(1, 2, 3),
-    NProfile(6, 3, 9)
+    NShortProfile(1, 9, 1),
+    NShortProfile(1, 3, 4),
+    NShortProfile(1, 2, 3),
+    NShortProfile(6, 3, 9)
   )
   val bestForFives = Set(
-    NProfile(7, 3, 1),
-    NProfile(2, 9, 2),
-    NProfile(2, 1, 3),
-    NProfile(4, 3, 7),
-    NProfile(7, 9, 7),
-    NProfile(7, 1, 8),
-    NProfile(7, 2, 9)
+    NShortProfile(7, 3, 1),
+    NShortProfile(2, 9, 2),
+    NShortProfile(2, 1, 3),
+    NShortProfile(4, 3, 7),
+    NShortProfile(7, 9, 7),
+    NShortProfile(7, 1, 8),
+    NShortProfile(7, 2, 9)
   )
   val bestForSixs = Set(
-    NProfile(1, 9, 1),
-    NProfile(1, 2, 3),
+    NShortProfile(1, 9, 1),
+    NShortProfile(1, 2, 3),
   )
   val bestForSevens = Set(
-    NProfile(1, 9, 1),
-    NProfile(1, 2, 3),
-    NProfile(9, 3, 3),
-    NProfile(1, 3, 4)
+    NShortProfile(1, 9, 1),
+    NShortProfile(1, 2, 3),
+    NShortProfile(9, 3, 3),
+    NShortProfile(1, 3, 4)
   )
   val acceptableForSevens = Set(
-    NProfile(9, 1, 1),
-    NProfile(3, 7, 1),
-    NProfile(9, 2, 2),
-    NProfile(3, 9, 3),
-    NProfile(3, 1, 4),
-    NProfile(9, 7, 7),
-    NProfile(1, 7, 8),
-    NProfile(1, 8, 9),
-    NProfile(7, 2, 9),
-    NProfile(9, 9, 9),
+    NShortProfile(9, 1, 1),
+    NShortProfile(3, 7, 1),
+    NShortProfile(9, 2, 2),
+    NShortProfile(3, 9, 3),
+    NShortProfile(3, 1, 4),
+    NShortProfile(9, 7, 7),
+    NShortProfile(1, 7, 8),
+    NShortProfile(1, 8, 9),
+    NShortProfile(7, 2, 9),
+    NShortProfile(9, 9, 9),
   )
   val bestForEights = Set(
-    NProfile(1, 9, 1),
-    NProfile(1, 3, 4),
-    NProfile(1, 8, 9)
+    NShortProfile(1, 9, 1),
+    NShortProfile(1, 3, 4),
+    NShortProfile(1, 8, 9)
   )
   val bestForNines = Set(
-    NProfile(7, 3, 1),
-    NProfile(2, 9, 2),
-    NProfile(8, 3, 2),
-    NProfile(2, 1, 3),
-    NProfile(7, 1, 8),
-    NProfile(7, 2, 9)
+    NShortProfile(7, 3, 1),
+    NShortProfile(2, 9, 2),
+    NShortProfile(8, 3, 2),
+    NShortProfile(2, 1, 3),
+    NShortProfile(7, 1, 8),
+    NShortProfile(7, 2, 9)
   )
 
   final val digitsOfLetters: Map[Char, Digit] = Map(
@@ -156,5 +156,7 @@ object Dictionary {
     val karmic = Set(13, 14, 16, 19, 26)
     val masterly = Set(11, 22, 33, 44, 55, 66, 77, 88, 99, 111, 222)
     val protective = Set(17, 41)
+    val powerful = Set(27)
+    val allSpecial = karmic ++ masterly ++ protective ++ powerful
   }
 }

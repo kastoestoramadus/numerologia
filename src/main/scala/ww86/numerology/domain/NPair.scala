@@ -1,51 +1,73 @@
 package ww86.numerology.domain
 
+import ww86.numerology.Dictionary.{Subnumbers, _}
 import ww86.numerology._
-import ww86.numerology.Dictionary._
 
-case class NPair(from: String, vowelsSum: Int, consonantsSum: Int) {
-  import NPair.toNDigit
-  def sumaObu = vowelsSum + consonantsSum
+case class NPair(from: Set[SingleWord], vowelsSum: Int, consonantsSum: Int) {
+  import NPair._
+  val bothSum = vowelsSum + consonantsSum
 
-  def obu = toNDigit(samogłosek + spółgłosek)
+  def bothDigit = toBasicNDigit(vowelsDigit + consonantsDigit)
 
-  def samogłosek = toNDigit(vowelsSum)
+  def vowelsDigit = toBasicNDigit(vowelsSum)
 
-  def spółgłosek = toNDigit(consonantsSum)
+  def consonantsDigit = toBasicNDigit(consonantsSum)
 
-  def jestKarmiczna = Subnumbers.karmic.contains(vowelsSum) || Subnumbers.karmic.contains(consonantsSum) || Subnumbers.karmic.contains(sumaObu)
+  val subNumbersCandidates = Set(bothSum, vowelsSum, consonantsSum, toNDigitOneStep(bothSum), toNDigitOneStep(vowelsSum), toNDigitOneStep(consonantsSum))
 
-  def jestOchronna = Subnumbers.protective.contains(vowelsSum) || Subnumbers.protective.contains(consonantsSum) || Subnumbers.protective.contains(sumaObu)
+  def jestKarmiczna = Subnumbers.karmic.intersect(subNumbersCandidates).isEmpty
 
-  def jestMistrzowska = Subnumbers.masterly.contains(vowelsSum) || Subnumbers.masterly.contains(consonantsSum) || Subnumbers.masterly.contains(sumaObu)
+  def jestOchronna = Subnumbers.protective.intersect(subNumbersCandidates).isEmpty
 
-  def jestMocy = 27 == vowelsSum || 27 == consonantsSum || 27 == (sumaObu)
+  val jestMistrzowska = Subnumbers.masterly.intersect(subNumbersCandidates).isEmpty
+
+  def jestMocy = Subnumbers.powerful.intersect(subNumbersCandidates).isEmpty
+
+  def subnumbersRootOnly(target: NPair): Set[(Int, String)] =
+    Subnumbers.allSpecial.intersect(target.subNumbersCandidates).map(_ -> target.from.mkString(" "))
+
+  def subnumbersRecursively: Set[(Int, String)] =
+    (subnumbersRootOnly(this) ++ from.map(NPair.apply).flatMap(subnumbersRootOnly))
 }
 
 object NPair {
+  def apply(str: String): NPair = {
+    val samo = str.filter(el => vowels.contains(el))
+    val spół = str.filterNot(el => vowels.contains(el))
+    NPair(Set(str), samo.map(digitsOfLetters).sum, spół.map(digitsOfLetters).sum)
+  }
+
+  def apply(słowa: Seq[SingleWord]): NPair = {
+    val pary = słowa.map(apply)
+    NPair(słowa.toSet, pary.map(_.vowelsSum).sum, pary.map(_.consonantsSum).sum)
+  }
+
   def prettyProfile(value: NPair): String = {
+    val podliczby = value.subnumbersRecursively
+
     import value._
     s"""Pełny profil numerologiczny:
   samogłosekSuma \t= $vowelsSum
   spółgłosekSuma \t= $consonantsSum
-  sumaObu \t\t\t= $sumaObu
-  samogłosek \t\t= $samogłosek ; aka wewnętrzna
-  spółgłosek \t\t= $spółgłosek ; aka zewnętrzna
-  obu \t\t\t\t= $obu ; aka cel
-  jestKarmiczna \t= $jestKarmiczna
-  jestOchronna \t\t= $jestOchronna
-  jestMistrzowska \t= $jestMistrzowska
-  jestMocy \t\t\t= $jestMocy
+  sumaObu \t\t\t= $bothSum
+  cyfra samogłosek \t= $vowelsDigit ; aka wewnętrzna
+  cyfra spółgłosek \t= $consonantsDigit ; aka zewnętrzna
+  cyfra obu \t\t= $bothDigit ; aka cel
+  podliczby: \t\t${podliczby.toList.sortBy(_._1).mkString("\n\t\t\t\t\t")}
 """
   }
 
   def prettyShortProfile(value: NPair): String = {
     import value._
-    s"$vowelsSum/$consonantsSum/$sumaObu"
+    s"$vowelsSum/$consonantsSum/$bothSum"
   }
 
-  def toNDigit(liczba: Int): Digit =
-    if (liczba < 10) liczba
+  def toBasicNDigit(liczba: Int): Digit =
+    if (liczba < 10 ) liczba
     else
-      toNDigit(liczba.toString.toCharArray.map(c => Integer.parseInt(c.toString)).sum)
+      toBasicNDigit(toNDigitOneStep(liczba))
+
+  def toNDigitOneStep(liczba: Int): Digit =
+    liczba.toString.toCharArray.map(c => Integer.parseInt(c.toString)).sum
+
 }
