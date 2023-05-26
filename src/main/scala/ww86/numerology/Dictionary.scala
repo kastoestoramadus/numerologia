@@ -1,6 +1,6 @@
 package ww86.numerology
 
-import ww86.numerology.domain.NShortProfile
+import ww86.numerology.domain.{CountedName, NShortProfile}
 
 object Dictionary {
   val bestForOnes = Set(
@@ -119,8 +119,6 @@ object Dictionary {
     'Ź' -> 8
   )
   final val vowels: String = "AĄEĘIOÓU"
-
-  case class CountedName(name: String, count: Int)
 
   lazy val maleNames: Vector[CountedName] = {
     println("Wczytywanie imion męskich.")

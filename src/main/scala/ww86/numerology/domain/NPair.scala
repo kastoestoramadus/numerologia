@@ -15,13 +15,13 @@ case class NPair(from: Set[SingleWord], vowelsSum: Int, consonantsSum: Int) {
 
   val subNumbersCandidates = Set(bothSum, vowelsSum, consonantsSum, toNDigitOneStep(bothSum), toNDigitOneStep(vowelsSum), toNDigitOneStep(consonantsSum))
 
-  def jestKarmiczna = Subnumbers.karmic.intersect(subNumbersCandidates).isEmpty
+  def jestKarmiczna = Subnumbers.karmic.intersect(subNumbersCandidates).nonEmpty
 
-  def jestOchronna = Subnumbers.protective.intersect(subNumbersCandidates).isEmpty
+  def jestOchronna = Subnumbers.protective.intersect(subNumbersCandidates).nonEmpty
 
-  val jestMistrzowska = Subnumbers.masterly.intersect(subNumbersCandidates).isEmpty
+  val jestMistrzowska = Subnumbers.masterly.intersect(subNumbersCandidates).nonEmpty
 
-  def jestMocy = Subnumbers.powerful.intersect(subNumbersCandidates).isEmpty
+  def jestMocy = Subnumbers.powerful.intersect(subNumbersCandidates).nonEmpty
 
   def subnumbersRootOnly(target: NPair): Set[(Int, String)] =
     Subnumbers.allSpecial.intersect(target.subNumbersCandidates).map(_ -> target.from.mkString(" "))

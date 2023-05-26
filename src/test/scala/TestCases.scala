@@ -1,6 +1,8 @@
 import org.scalatest.matchers.should.Matchers
-import ww86.numerology.domain.NPair
+import ww86.numerology.domain._
 import org.scalatest.wordspec
+import ww86.numerology.Dictionary.bestForSixs
+import ww86.numerology.RunProfileCounting
 
 class TestCases extends wordspec.AnyWordSpec with Matchers {
   val testCase1 = List("PIOTR", "DARIUSZ", "WOJCIECH", "SZCZAWNICKI") // podliczby, 13, 14, 33, 13, 22, 19; 67/4 95/5 162/9
@@ -35,7 +37,8 @@ class TestCases extends wordspec.AnyWordSpec with Matchers {
       suspect.subnumbersRecursively should contain theSameElementsAs expected
     }
     "Propose names transforming to better profiles" in {
-
+      val r = RunProfileCounting.countOptionsFor(Vector(CountedName("HEKTOR", 1)), testCase2, bestForSixs)
+      r.head._2.head shouldBe "HEKTOR"
     }
   }
 }
